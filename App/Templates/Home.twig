@@ -1,0 +1,138 @@
+{% extends 'Header.twig' %}
+
+{% block content %}
+
+<link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css">
+
+    <br/>
+    <a href="./createTask" class="btn btn-outline-primary mb-3 ml-4">Create task</a>
+
+    <form name="sort_form" method="get" action="">
+
+        <div style="margin-left: 20px">
+
+
+            <div style="display: inline-block" class="form-group">
+
+                <label>Тип сортировки:</label>
+
+                <select class="form-control" name="sort">
+
+                    <option selected name="asc" value="asc">По возрастанию</option>
+                    <option name="desc" value="desc">По убыванию</option>
+
+                </select>
+
+            </div>
+
+            <p style="display: inline-block">-></p>
+
+                <div style="display: inline-block" class="form-group">
+
+                    <label>Сортировать по: </label>
+
+                        <select name="sortType" class="form-control">
+
+                            <option name="login_sort" value="login_sort">Логину</option>
+                            <option name="email_sort" value="email_sort">E-Mail</option>
+                            <option name="task_sort" value="task_sort">Задаче</option>
+
+                        </select>
+
+                </div>
+
+        </div>
+
+        <input class="btn btn-outline-info mb-3 ml-3" type="submit" value="Сортировать"/>
+
+    </form>
+
+    <table class="table table-hover">
+
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Login</th>
+            <th scope="col">E-Mail</th>
+            <th scope="col">Task</th>
+            <th scope="col">Checked</th>
+        </tr>
+        </thead>
+        <tbody class="task-table">
+
+            {% for lt in listTasks %}
+
+                <tr>
+
+                    <th scope="row">{{ lt.id }}</th>
+                    <td>{{ lt.login }}</td>
+                    <td>{{ lt.email }}</td>
+
+                    {% if cookie %}
+
+                        <td>
+                            {{ lt.task }}
+                            <form method="post" action="./editTask/{{ lt.id }}">
+                                <input type="submit" name="task_edit_button"
+                                       class="btn btn-outline-info"
+                                       value="Ред."
+                                />
+                            </form>
+                        </td>
+
+                    {% else %}
+
+                        <td>{{ lt.task }}</td>
+
+                    {% endif %}
+
+                    {% if cookie %}
+
+                        <td>
+                            <form method="post" action="./checkedTask">
+
+                                <input type="hidden" name="checked" value="{{ lt.checked == 0 ? '1': '0' }}"/>
+                                <input type="hidden" name="checked_task_id" value="{{ lt.id}}"/>
+
+                                <input type="submit" name="task_complete_data"
+                                       class="btn {{ lt.checked == 0 ? 'btn-outline-danger ': 'btn-outline-success'}}"
+                                       value="{{ lt.checked == 0 ? 'Не выполнено' : 'Выполнено' }}"
+                                />
+
+                            </form>
+                        </td>
+
+                    {% else %}
+
+                        {% if lt.checked == 0 %}
+                            <td>Не выполнено</td>
+                        {% else %}
+                            <td>Выполнено</td>
+                        {% endif %}
+
+                    {% endif %}
+
+                </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <nav style="width: 100%; margin: 0 auto" aria-label="Page navigation example">
+
+        <ul class="pagination">
+
+            <li class="page-item">
+                <a class="page-link" href="./?offset={{ offset == 0 ? 0 : offset - limit }}">Previous</a>
+            </li>
+            <li class="page-item">
+                <a class="{{ limit > countTasks ? '' : 'page-link' }}" href="./?offset={{ offset + limit }}">{{ limit > countTasks ? '' : 'Next' }}</a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+{% endblock  %}

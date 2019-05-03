@@ -1,0 +1,19 @@
+{% extends 'Header.twig' %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css">
+
+    <form action="./taskEdited" method="post" class="p-5">
+
+        <div class="form-group">
+            <label for="pass_eTask">Task</label>
+            <input type="hidden" name="id_eTask" value="{{ currentTask.id }}"/>
+            <input type="text" class="form-control" name="task_eTask" value="{{ currentTask.task }}">
+        </div>
+
+        <button type="submit" name="task_edit_button" class="btn btn-primary">Обновить</button>
+
+    </form>
+
+{% endblock  %}
